@@ -21,7 +21,7 @@ checkApps()
 	case $OSTYPE in
 		darwin*)
 			install_brew
-			sudo brew list watch  > /dev/null;; 
+			brew list watch  > /dev/null;; 
 		linux*)   
 			if [ -f /etc/redhat-release ] ; then
 				sudo rpm -qa | grep watch   > /dev/null
@@ -40,13 +40,12 @@ checkApps()
 
 checkRubyApps()
 {
-    /usr/bin/gem list -i ${1}
-    return $?
+    ${gem} list -i ${1}
 }
 
 installApps()
 {
-	if [[ checkApps -ne 0 ]]; then
+	if [[ "$(checkApps)" == 0 ]]; then
 		echo "INFO: Installing WATCH."
 		case "$OSTYPE" in
 			darwin*)
@@ -71,8 +70,8 @@ installRubyApps()
 {
 	gem=$(which gem)
 	for appName in ${ruby_apps}; do
-		if [[ $(checkRubyApps ${appName}) -ne 0 ]]; then
-			${gem} install ${appName}
+		if [[ "$(checkRubyApps ${appName})" == "false" ]]; then
+			${gem} list ${appName}
 		else
 			echo "INFO: Ruby ${appName} already present on system!!!"
 		fi
